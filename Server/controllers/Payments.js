@@ -11,7 +11,7 @@ const {
 const { paymentSuccessEmail } = require("../mail/templates/paymentSuccessEmail")
 const CourseProgress = require("../models/CourseProgress")
 
-console.log("Payments controller razorpay key:", process.env.RAZORPAY_KEY)
+
 
 // Capture the payment and initiate the Razorpay order
 exports.capturePayment = async (req, res) => {
