@@ -35,7 +35,7 @@ exports.sendOTP = async (req, res) => {
             specialChars: false,
         });
 
-        console.log("OTP: ", otp);
+       
 
         // check whether it is unique OTP
         let otpInDB = await OTP.findOne({otp: otp});
@@ -168,7 +168,7 @@ exports.signUp = async (req, res) => {
 
         // hash the password
         const hashPassword = await bcrypt.hash(password, 10);
-        console.log("HashPassword: ", hashPassword);
+       
 
         // create entry in DB
         const profileDetails = await Profile.create({

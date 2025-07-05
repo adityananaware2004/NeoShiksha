@@ -1,19 +1,39 @@
 # Node modules
 node_modules/
+Server/node_modules/
+
+# Environment files
+.env
+Server/.env
+
+# Build outputs
+dist/
+build/
+Server/dist/
+Server/build/
 
 # Logs
-logs/
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Environment variables
-.env
-
-# OS files
+# OS-specific files
 .DS_Store
 Thumbs.db
 
-# VS Code settings
+# IDE/editor folders
 .vscode/
+.idea/
+*.swp
+
+# Misc
+*.log
+
+# Dependency lock files (if you want to ignore root lock files)
+# Uncomment if you don't want to track these
+# package-lock.json
+# yarn.lock
+
+# Public and static build assets (if generated)
+public/
+Server/public/
