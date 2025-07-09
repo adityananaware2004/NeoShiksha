@@ -22,7 +22,7 @@ const Resources = [
 const Plans = ["Paid memberships", "For students", "Business solutions"];
 const Community = ["Forums", "Chapters", "Events"];
 
-export const Footer = () => {
+const Footer = () => {
   return (
     <div className="bg-richblack-800">
       <div className="flex lg:flex-row gap-8 items-center justify-between w-11/12 max-w-maxContent text-richblack-400 leading-6 mx-auto relative py-14">
@@ -30,8 +30,7 @@ export const Footer = () => {
           {/* Section 1 */}
           <div className="lg:w-[50%] flex flex-wrap flex-row justify-between lg:border-r lg:border-richblack-700 pl-3 lg:pr-5 gap-3">
             <div className="w-[30%] flex flex-col gap-3 lg:w-[30%] mb-7 lg:pl-0">
-              {/* <img src={Logo} alt="" className="object-contain" /> */}
-              <span className="text-3xl text-white font-bold">NeoShiksha</span>
+              <img src={Logo} alt="" className="object-contain" />
               <h1 className="text-richblack-50 font-semibold text-[16px]">
                 Company
               </h1>
@@ -47,7 +46,6 @@ export const Footer = () => {
                   );
                 })}
               </div>
-
               <div className="flex gap-3 text-lg">
                 <FaFacebook />
                 <FaGoogle />
@@ -63,7 +61,7 @@ export const Footer = () => {
               </h1>
 
               <div className="flex flex-col gap-2 mt-2">
-                {/* {Resources.map((ele, index) => {
+                {Resources.map((ele, index) => {
                   return (
                     <div
                       key={index}
@@ -74,7 +72,7 @@ export const Footer = () => {
                       </Link>
                     </div>
                   );
-                })} */}
+                })}
               </div>
 
               <h1 className="text-richblack-50 font-semibold text-[16px] mt-7">
@@ -121,7 +119,6 @@ export const Footer = () => {
                     </div>
                   );
                 })}
-
               </div>
             </div>
           </div>
@@ -175,10 +172,11 @@ export const Footer = () => {
             })}
           </div>
 
-          <div className="text-center">Made with ❤️ NeoShiksha © 2025 NeoShiksha</div>
-
+          <div className="text-center">Made with ❤️ CodeHelp © 2023 Studynotion</div>
         </div>
       </div>
     </div>
   );
 };
+
+export default Footer;
