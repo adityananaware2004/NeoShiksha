@@ -17,6 +17,7 @@ exports.authenticate = async (req, res, next) => {
                 message: 'Token is missing'
             })
         }
+         console.log("Token received:", token);
 
         // verify the token
         try{
