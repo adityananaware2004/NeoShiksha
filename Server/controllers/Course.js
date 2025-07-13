@@ -98,7 +98,7 @@ exports.editCourse = async (req, res) => {
     for (const key in updates) {
       if (updates.hasOwnProperty(key)) {
         if (key === "tag" || key === "instructions") {
-          course[key] = JSON.parse(updates[key])
+          course[key] = (updates[key])
         } else {
           course[key] = updates[key]
         }
