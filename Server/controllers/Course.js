@@ -167,6 +167,7 @@ exports.getAllCourses = async (req, res) => {
       success: false,
       message: `Can't Fetch Course Data`,
       error: error.message,
+      
     })
   }
 }

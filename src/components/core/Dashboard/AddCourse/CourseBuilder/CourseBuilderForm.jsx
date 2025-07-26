@@ -31,6 +31,11 @@ export default function CourseBuilderForm() {
   const [editSectionName, setEditSectionName] = useState(null)
   const dispatch = useDispatch()
 
+  // Debug logging
+  console.log("Course data:", course)
+  console.log("Course content:", course?.courseContent)
+  console.log("Course content length:", course?.courseContent?.length)
+
   // handle form submission
   const onSubmit = async (data) => {
     // console.log(data)
@@ -81,7 +86,7 @@ export default function CourseBuilderForm() {
   }
 
   const goToNext = () => {
-    if (course.courseContent.length === 0) {
+    if (!course.courseContent || course.courseContent.length === 0) {
       toast.error("Please add atleast one section")
       return
     }
@@ -140,8 +145,12 @@ export default function CourseBuilderForm() {
           )}
         </div>
       </form>
-      {course.courseContent.length > 0 && (
+      {course.courseContent && course.courseContent.length > 0 ? (
         <NestedView handleChangeEditSectionName={handleChangeEditSectionName} />
+      ) : (
+        <div className="text-center py-8 text-richblack-300">
+          <p>No sections added yet. Create your first section above.</p>
+        </div>
       )}
       {/* Next Prev Button */}
       <div className="flex justify-end gap-x-3">

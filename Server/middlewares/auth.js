@@ -17,7 +17,7 @@ exports.authenticate = async (req, res, next) => {
                 message: 'Token is missing'
             })
         }
-         console.log("Token received:", token);
+        
 
         // verify the token
         try{
@@ -48,6 +48,38 @@ exports.authenticate = async (req, res, next) => {
         })
     }
 }
+
+
+// exports.auth = async (req, res, next) => {
+//   try {
+//     // Get token from header
+//     const token = req.header("Authorization")?.replace("Bearer ", "")
+
+//     if (!token) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Token Missing"
+//       })
+//     }
+
+//     // Verify token
+//     try {
+//       const decoded = jwt.verify(token, process.env.JWT_SECRET)
+//       req.user = decoded
+//       next()
+//     } catch (error) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Invalid Token"
+//       })
+//     }
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: "Authentication Error"
+//     })
+//   }
+// }
 
 // isStudent
 exports.isStudent = async(req, res, next) => {

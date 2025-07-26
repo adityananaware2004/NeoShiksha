@@ -20,14 +20,22 @@ export default function UpdatePassword() {
     formState: { errors },
   } = useForm()
 
+  // const submitPasswordForm = async (data) => {
+  //   // console.log("password Data - ", data)
+  //   try {
+  //     await changePassword(token, data)
+  //   } catch (error) {
+  //     console.log("ERROR MESSAGE - ", error.message)
+  //   }
+  // }
   const submitPasswordForm = async (data) => {
-    // console.log("password Data - ", data)
-    try {
-      await changePassword(token, data)
-    } catch (error) {
-      console.log("ERROR MESSAGE - ", error.message)
-    }
+  try {
+    // Pass only the data object, not the token
+    await changePassword(data)
+  } catch (error) {
+    console.log("ERROR MESSAGE - ", error.message)
   }
+}
 
   return (
     <>
