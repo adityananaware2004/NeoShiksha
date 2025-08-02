@@ -6,6 +6,8 @@ import { setUser } from "../../slices/profileSlice"
 import { apiConnector } from "../apiconnector"
 import { endpoints } from "../apis"
 
+
+
 const {
   SENDOTP_API,
   SIGNUP_API,
@@ -14,9 +16,13 @@ const {
   RESETPASSWORD_API,
 } = endpoints
 
+
+
 export function sendOtp(email, navigate) {
+  
   return async (dispatch) => {
     const toastId = toast.loading("Loading...")
+   
     dispatch(setLoading(true))
     try {
       const response = await apiConnector("POST", SENDOTP_API, {

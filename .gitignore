@@ -35,5 +35,5 @@ Thumbs.db
 # yarn.lock
 
 # Public and static build assets (if generated)
-public/
+
 Server/public/
