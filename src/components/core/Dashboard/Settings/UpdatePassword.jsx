@@ -30,8 +30,8 @@ export default function UpdatePassword() {
   // }
   const submitPasswordForm = async (data) => {
   try {
-    // Pass only the data object, not the token
-    await changePassword(data)
+    // Pass both data and token
+    await changePassword(data, token)
   } catch (error) {
     console.log("ERROR MESSAGE - ", error.message)
   }

@@ -11,7 +11,13 @@ export default function RenderTotalAmount() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  // Safety check for total
+  const safeTotal = typeof total === 'number' ? total : 0
+
   const handleBuyCourse = () => {
+    if (!Array.isArray(cart)) {
+      return
+    }
     const courses = cart.map((course) => course._id)
     buyCourse(token, courses, user, navigate, dispatch)
   }
@@ -19,7 +25,7 @@ export default function RenderTotalAmount() {
   return (
     <div className="min-w-[280px] rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6">
       <p className="mb-1 text-sm font-medium text-richblack-300">Total:</p>
-      <p className="mb-6 text-3xl font-medium text-yellow-100">₹ {total}</p>
+      <p className="mb-6 text-3xl font-medium text-yellow-100">₹ {safeTotal}</p>
       <IconBtn
         text="Buy Now"
         onclick={handleBuyCourse}

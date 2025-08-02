@@ -7,6 +7,7 @@ const userRoute = require('./routes/user');
 const profileRoute = require('./routes/Profile');
 const paymentRoute = require('./routes/Payment');
 const courseRoute = require('./routes/course');
+const contactroute= require('./routes/Contact');
 
 const database = require('./config/database');
 const cookieParser = require('cookie-parser');
@@ -20,6 +21,7 @@ const PORT = process.env.PORT || 5000;
 
 // database connection
 database.dbconnect();
+database.dbconnect();
 
 // middleware
 app.use(express.json());
@@ -28,8 +30,8 @@ app.use(cookieParser());
 app.use(cors({
   origin: "http://localhost:3000",
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }))
 
 app.use(fileUpload({
@@ -45,6 +47,7 @@ app.use('/api/v1/auth', userRoute);
 app.use('/api/v1/profile', profileRoute);
 app.use('/api/v1/payment', paymentRoute);
 app.use('/api/v1/course', courseRoute);
+app.use('/api/v1/reach', contactroute);
 
 // default route
 app.get('/', (req, res) => {

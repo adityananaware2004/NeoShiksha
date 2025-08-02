@@ -20,10 +20,41 @@ const Catalog = () => {
     //Fetch all categories
     useEffect(()=> {
         const getCategories = async() => {
-            const res = await apiConnector("GET", categories.CATEGORIES_API);
-            const category_id = 
-            res?.data?.data?.filter((ct) => ct.name.split(" ").join("-").toLowerCase() === catalogName)[0]._id;
-            setCategoryId(category_id);
+            try {
+                const res = await apiConnector("GET", categories.CATEGORIES_API);
+                console.log("Categories response:", res?.data?.data);
+                console.log("Catalog name:", catalogName);
+                
+                // Try multiple matching strategies
+                const category = res?.data?.data?.find((ct) => {
+                    const categoryNameLower = ct.name.toLowerCase();
+                    const catalogNameLower = catalogName.toLowerCase();
+                    
+                    // Direct match
+                    if (categoryNameLower === catalogNameLower) return true;
+                    
+                    // Match with spaces replaced by hyphens
+                    if (categoryNameLower.replace(/\s+/g, '-') === catalogNameLower) return true;
+                    
+                    // Match with hyphens replaced by spaces
+                    if (categoryNameLower === catalogNameLower.replace(/-/g, ' ')) return true;
+                    
+                    return false;
+                });
+                
+                if (category) {
+                    console.log("Found category:", category);
+                    setCategoryId(category._id);
+                } else {
+                    console.log("No category found for:", catalogName);
+                    // Set a default category or handle the error
+                    if (res?.data?.data?.length > 0) {
+                        setCategoryId(res.data.data[0]._id);
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
         }
         getCategories();
     },[catalogName]);
@@ -31,12 +62,13 @@ const Catalog = () => {
     useEffect(() => {
         const getCategoryDetails = async() => {
             try{
+                console.log("Fetching category details for ID:", categoryId);
                 const res = await getCatalogaPageData(categoryId);
-                console.log("PRinting res: ", res);
+                console.log("Category details response:", res);
                 setCatalogPageData(res);
             }
             catch(error) {
-                console.log(error)
+                console.error("Error fetching category details:", error);
             }
         }
         if(categoryId) {
@@ -65,14 +97,14 @@ const Catalog = () => {
               <p className="text-sm text-richblack-300">
                 {`Home / Catalog / `}
                 <span className="text-yellow-25">
-                  {catalogPageData?.data?.selectedCategory?.name}
+                  {catalogPageData?.selectedCategory?.name}
                 </span>
               </p>
               <p className="text-3xl text-richblack-5">
-                {catalogPageData?.data?.selectedCategory?.name}
+                {catalogPageData?.selectedCategory?.name}
               </p>
               <p className="max-w-[870px] text-richblack-200">
-                {catalogPageData?.data?.selectedCategory?.description}
+                {catalogPageData?.selectedCategory?.description}
               </p>
             </div>
           </div>
@@ -104,18 +136,18 @@ const Catalog = () => {
             </div>
             <div>
               <CourseSlider
-                Courses={catalogPageData?.data?.selectedCategory?.courses}
+                Courses={catalogPageData?.selectedCategory?.courses}
               />
             </div>
           </div>
           {/* Section 2 */}
           <div className=" mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
             <div className="section_heading">
-              Top courses in {catalogPageData?.data?.differentCategory?.name}
+              Top courses in {catalogPageData?.differentCategory?.name}
             </div>
             <div className="py-8">
               <CourseSlider
-                Courses={catalogPageData?.data?.differentCategory?.courses}
+                Courses={catalogPageData?.differentCategory?.courses}
               />
             </div>
           </div>
@@ -125,7 +157,7 @@ const Catalog = () => {
             <div className="section_heading">Frequently Bought</div>
             <div className="py-8">
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                {catalogPageData?.data?.mostSellingCourses
+                {catalogPageData?.mostSellingCourses
                   ?.slice(0, 4)
                   .map((course, i) => (
                     <Course_Card course={course} key={i} Height={"h-[400px]"} />

@@ -18,8 +18,8 @@ export default function Instructor() {
         const instructorApiData = await getInstructorData(token)
         const result = await fetchInstructorCourses(token)
         console.log(instructorApiData)
-        if (instructorApiData.length) setInstructorData(instructorApiData)
-        if (result) {
+        if (instructorApiData && Array.isArray(instructorApiData)) setInstructorData(instructorApiData)
+        if (result && Array.isArray(result)) {
           setCourses(result)
         }
         setLoading(false)
@@ -27,14 +27,14 @@ export default function Instructor() {
     }, [])
   
     const totalAmount = instructorData?.reduce(
-      (acc, curr) => acc + curr.totalAmountGenerated,
+      (acc, curr) => acc + (curr.totalAmountGenerated || 0),
       0
-    )
+    ) || 0
   
     const totalStudents = instructorData?.reduce(
-      (acc, curr) => acc + curr.totalStudentsEnrolled,
+      (acc, curr) => acc + (curr.totalStudentsEnrolled || 0),
       0
-    )
+    ) || 0
   
     return (
       <div>
@@ -53,7 +53,7 @@ export default function Instructor() {
             <div className="my-4 flex h-[450px] space-x-4">
               {/* Render chart / graph */}
               {totalAmount > 0 || totalStudents > 0 ? (
-                <InstructorChart courses={instructorData} />
+                <InstructorChart courses={instructorData || []} />
               ) : (
                 <div className="flex-1 rounded-md bg-richblack-800 p-6">
                   <p className="text-lg font-bold text-richblack-5">Visualize</p>
@@ -69,7 +69,7 @@ export default function Instructor() {
                   <div>
                     <p className="text-lg text-richblack-200">Total Courses</p>
                     <p className="text-3xl font-semibold text-richblack-50">
-                      {courses.length}
+                      {Array.isArray(courses) ? courses.length : 0}
                     </p>
                   </div>
                   <div>
@@ -96,7 +96,7 @@ export default function Instructor() {
                 </Link>
               </div>
               <div className="my-4 flex items-start space-x-6">
-                {courses.slice(0, 3).map((course) => (
+                {Array.isArray(courses) && courses.slice(0, 3).map((course) => (
                   <div key={course._id} className="w-1/3">
                     <img
                       src={course.thumbnail}
@@ -109,7 +109,7 @@ export default function Instructor() {
                       </p>
                       <div className="mt-1 flex items-center space-x-2">
                         <p className="text-xs font-medium text-richblack-300">
-                          {course.studentsEnroled.length} students
+                          {course.totalStudentsEnrolled ?? 0} students
                         </p>
                         <p className="text-xs font-medium text-richblack-300">
                           |

@@ -4,7 +4,8 @@ import { BsChevronDown } from "react-icons/bs"
 import { useSelector } from "react-redux"
 import { Link, matchPath, useLocation } from "react-router-dom"
 
-import logo from "../../assets/Logo/Logo-Full-Light.png"
+// import logo from "../../assets/Logo/Logo-Full-Light.png"
+import logo from "../../assets/Logo/Logo-NeoShiksha.png";
 import { NavbarLinks } from "../../data/navbar-links"
 import { apiConnector } from "../../services/apiconnector"
 import { categories } from "../../services/apis"
@@ -19,19 +20,31 @@ function Navbar() {
 
   const [subLinks, setSubLinks] = useState([])
   const [loading, setLoading] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Function to fetch categories
+  const fetchCategories = async () => {
+    setLoading(true)
+    try {
+      const res = await apiConnector("GET", categories.CATEGORIES_API)
+      setSubLinks(res.data.data)
+    } catch (error) {
+      console.log("Could not fetch Categories.", error)
+    }
+    setLoading(false)
+  }
 
   useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      try {
-        const res = await apiConnector("GET", categories.CATEGORIES_API)
-        setSubLinks(res.data.data)
-      } catch (error) {
-        console.log("Could not fetch Categories.", error)
-      }
-      setLoading(false)
-    })()
+    fetchCategories()
   }, [])
+
+  // Close mobile menu when location changes
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [location.pathname])
+
+  // Optionally, expose fetchCategories for external refresh (e.g., after adding a category)
+  // window.refreshCategories = fetchCategories
 
   // console.log("sub links", subLinks)
 
@@ -117,7 +130,7 @@ function Navbar() {
           {user && user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR && (
             <Link to="/dashboard/cart" className="relative">
               <AiOutlineShoppingCart className="text-2xl text-richblack-100" />
-              {totalItems > 0 && (
+              {typeof totalItems === 'number' && totalItems > 0 && (
                 <span className="absolute -bottom-2 -right-2 grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-richblack-600 text-center text-xs font-bold text-yellow-100">
                   {totalItems}
                 </span>
@@ -140,10 +153,118 @@ function Navbar() {
           )}
           {token !== null && <ProfileDropdown />}
         </div>
-        <button className="mr-4 md:hidden">
+        <button 
+          className="mr-4 md:hidden"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
           <AiOutlineMenu fontSize={24} fill="#AFB2BF" />
         </button>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="absolute top-14 left-0 right-0 z-[1000] bg-richblack-800 border-b border-richblack-700 md:hidden">
+          <div className="px-4 py-4 space-y-4">
+            {/* Navigation Links */}
+            <nav>
+              <ul className="space-y-3">
+                {NavbarLinks.map((link, index) => (
+                  <li key={index}>
+                    {link.title === "Catalog" ? (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className={`text-sm ${
+                            matchRoute("/catalog/:catalogName")
+                              ? "text-yellow-25"
+                              : "text-richblack-25"
+                          }`}>
+                            {link.title}
+                          </span>
+                        </div>
+                        {/* Mobile Catalog Dropdown */}
+                        <div className="ml-4 space-y-2">
+                          {loading ? (
+                            <p className="text-sm text-richblack-100">Loading...</p>
+                          ) : (subLinks && subLinks.length) ? (
+                            <>
+                              {subLinks
+                                ?.filter(
+                                  (subLink) => subLink?.courses?.length > 0
+                                )
+                                ?.map((subLink, i) => (
+                                  <Link
+                                    to={`/catalog/${subLink.name
+                                      .split(" ")
+                                      .join("-")
+                                      .toLowerCase()}`}
+                                    className="block text-sm text-richblack-100 hover:text-yellow-25 py-1"
+                                    key={i}
+                                  >
+                                    {subLink.name}
+                                  </Link>
+                                ))}
+                            </>
+                          ) : (
+                            <p className="text-sm text-richblack-100">No Courses Found</p>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <Link to={link?.path}>
+                        <p
+                          className={`text-sm ${
+                            matchRoute(link?.path)
+                              ? "text-yellow-25"
+                              : "text-richblack-25"
+                          }`}
+                        >
+                          {link.title}
+                        </p>
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* Divider */}
+            <div className="border-t border-richblack-700 pt-4">
+              {/* Cart */}
+              {user && user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR && (
+                <Link to="/dashboard/cart" className="flex items-center gap-2 py-2">
+                  <AiOutlineShoppingCart className="text-xl text-richblack-100" />
+                  <span className="text-sm text-richblack-100">Cart</span>
+                  {typeof totalItems === 'number' && totalItems > 0 && (
+                    <span className="grid h-5 w-5 place-items-center overflow-hidden rounded-full bg-richblack-600 text-center text-xs font-bold text-yellow-100">
+                      {totalItems}
+                    </span>
+                  )}
+                </Link>
+              )}
+
+              {/* Auth Buttons */}
+              {token === null ? (
+                <div className="flex flex-col gap-2 pt-2">
+                  <Link to="/login">
+                    <button className="w-full rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[8px] text-sm text-richblack-100">
+                      Log in
+                    </button>
+                  </Link>
+                  <Link to="/signup">
+                    <button className="w-full rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[8px] text-sm text-richblack-100">
+                      Sign up
+                    </button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="pt-2">
+                  <ProfileDropdown />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

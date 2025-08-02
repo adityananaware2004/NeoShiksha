@@ -18,8 +18,23 @@ export const getCatalogaPageData = async(categoryId) => {
   }
   catch(error) {
     console.log("CATALOG PAGE DATA API ERROR....", error);
+    
+    // Handle 404 gracefully - return empty data structure
+    if (error?.response?.status === 404) {
+      result = {
+        success: true,
+        message: "No courses found for this category",
+        selectedCategory: { courses: [] },
+        differentCategory: null,
+        mostSellingCourses: []
+      };
+    } else {
     toast.error(error.message);
-    result = error.response?.data;
+      result = error.response?.data || {
+        success: false,
+        message: "Could not fetch category data"
+      };
+    }
   }
   toast.dismiss(toastId);
   return result;

@@ -8,6 +8,16 @@ import { removeFromCart } from "../../../../slices/cartSlice"
 export default function RenderCartCourses() {
   const { cart } = useSelector((state) => state.cart)
   const dispatch = useDispatch()
+  
+  // Safety check to ensure cart is an array
+  if (!Array.isArray(cart)) {
+    return (
+      <div className="flex flex-1 flex-col">
+        <p className="text-center text-richblack-300">No courses in cart</p>
+      </div>
+    )
+  }
+  
   return (
     <div className="flex flex-1 flex-col">
       {cart.map((course, indx) => (

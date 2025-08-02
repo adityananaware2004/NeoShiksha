@@ -4,7 +4,9 @@ const courseSchema = new mongoose.Schema({
 
     // few changes made in the code are:
     instructions: {
-        type: String,
+        // type: String,
+        type: [String],
+
     },
 
     status: {
@@ -63,6 +65,10 @@ const courseSchema = new mongoose.Schema({
             ref: "User",
         }
     ],
+    sold: {
+        type: Number,
+        default: 0,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

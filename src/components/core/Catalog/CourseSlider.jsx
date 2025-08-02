@@ -9,9 +9,12 @@ import { Autoplay,FreeMode,Navigation, Pagination}  from 'swiper'
 import Course_Card from './Course_Card'
 
 const CourseSlider = ({Courses}) => {
+  // Deduplicate courses by _id
+  const uniqueCourses = Courses ? Array.from(new Map(Courses.map(c => [c._id, c])).values()) : [];
+  console.log("CourseSlider received courses:", uniqueCourses);
   return (
     <>
-      {Courses?.length ? (
+      {uniqueCourses?.length ? (
         <Swiper
           slidesPerView={1}
           spaceBetween={25}
@@ -24,8 +27,8 @@ const CourseSlider = ({Courses}) => {
           }}
           className="max-h-[30rem]"
         >
-          {Courses?.map((course, i) => (
-            <SwiperSlide key={i}>
+          {uniqueCourses?.map((course) => (
+            <SwiperSlide key={course._id}>
               <Course_Card course={course} Height={"h-[250px]"} />
             </SwiperSlide>
           ))}

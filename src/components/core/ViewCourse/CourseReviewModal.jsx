@@ -31,15 +31,29 @@ export default function CourseReviewModal({ setReviewModal }) {
   }
 
   const onSubmit = async (data) => {
-    await createRating(
-      {
-        courseId: courseEntireData._id,
-        rating: data.courseRating,
-        review: data.courseExperience,
-      },
-      token
-    )
-    setReviewModal(false)
+    try {
+      // Check if user is enrolled in the course
+      const isEnrolled = courseEntireData?.studentsEnrolled?.includes(user?._id);
+      
+      if (!isEnrolled) {
+        alert("You need to be enrolled in this course to leave a review. Please purchase the course first.");
+        setReviewModal(false);
+        return;
+      }
+      
+      await createRating(
+        {
+          courseId: courseEntireData._id,
+          rating: data.courseRating,
+          review: data.courseExperience,
+        },
+        token
+      )
+      setReviewModal(false)
+    } catch (error) {
+      console.error("Error creating rating:", error);
+      alert("Failed to create rating. Please try again.");
+    }
   }
 
   return (

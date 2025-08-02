@@ -8,4 +8,6 @@ router.post("/capturePayment", authenticate, isStudent, capturePayment)
 router.post("/verifyPayment",authenticate, isStudent, verifyPayment)
 router.post("/sendPaymentSuccessEmail", authenticate, isStudent, sendPaymentSuccessEmail);
 
+// router.get("/purchaseHistory", authenticate, isStudent, purchaseHistory);
+
 module.exports = router

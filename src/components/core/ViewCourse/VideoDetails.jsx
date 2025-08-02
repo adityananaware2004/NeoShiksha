@@ -159,7 +159,7 @@ const VideoDetails = () => {
   const handleLectureCompletion = async () => {
     setLoading(true)
     const res = await markLectureAsComplete(
-      { courseId: courseId, subsectionId: subSectionId },
+      { courseId: courseId, subSectionId: subSectionId },
       token
     )
     if (res) {
@@ -179,7 +179,6 @@ const VideoDetails = () => {
       ) : (
         <Player
           ref={playerRef}
-          aspectRatio="16:9"
           playsInline
           onEnded={() => setVideoEnded(true)}
           src={videoData?.videoUrl}

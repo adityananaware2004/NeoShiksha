@@ -11,6 +11,7 @@ const {
     editCourse,
     getInstructorCourses,
     deleteCourse,
+    updateCourseProgress,
 } = require('../controllers/Course')
 
 // import the category controllers
@@ -54,7 +55,8 @@ const {authenticate, isAdmin, isInstructor, isStudent} = require('../middlewares
 router.post("/getFullCourseDetails", authenticate, getFullCourseDetails);
 router.get("/getInstructorCourses", authenticate, isInstructor, getInstructorCourses);
 router.delete("/deleteCourse", deleteCourse);
-// router.get("/getTopSellingCourses", getTopSellingCourses);
+router.get("/getTopSellingCourses", getTopSellingCourses);
+router.get("/getNewCourses", getAllCourses); // New courses are just all published courses sorted by creation date
 
 // route for creating a course, can only be created by an instructor
 router.post('/createCourse', authenticate, isInstructor, createCourse);
@@ -85,6 +87,9 @@ router.get('/getAllCourses', getAllCourses);
 
 // get course details
 router.post('/getCourseDetails', getCourseDetails);
+
+// update course progress when lecture is completed
+router.post('/updateCourseProgress', authenticate, updateCourseProgress);
 
 // ************************************************************************************
 //                        Categories routes

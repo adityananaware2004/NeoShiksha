@@ -49,7 +49,9 @@ function CourseDetails() {
   // Calculating Avg Review count
   const [avgReviewCount, setAvgReviewCount] = useState(0)
   useEffect(() => {
-    const count = GetAvgRating(response?.data?.courseDetails.ratingAndReviews)
+    const count = GetAvgRating(response?.courseDetails?.ratingAndReviews)
+    console.log("Rating data:", response?.courseDetails?.ratingAndReviews)
+    console.log("Calculated avg rating:", count)
     setAvgReviewCount(count)
   }, [response])
   // console.log("avgReviewCount: ", avgReviewCount)
@@ -70,7 +72,7 @@ function CourseDetails() {
   const [totalNoOfLectures, setTotalNoOfLectures] = useState(0)
   useEffect(() => {
     let lectures = 0
-    response?.data?.courseDetails?.courseContent?.forEach((sec) => {
+    response?.courseDetails?.courseContent?.forEach((sec) => {
       lectures += sec.subSection.length || 0
     })
     setTotalNoOfLectures(lectures)
@@ -83,7 +85,7 @@ function CourseDetails() {
       </div>
     )
   }
-  if (!response.success) {
+  if (!response || !response.courseDetails) {
     return <Error />
   }
 
@@ -99,7 +101,7 @@ function CourseDetails() {
     instructor,
     studentsEnrolled,
     createdAt,
-  } = response.data?.courseDetails
+  } = response.courseDetails
 
   const handleBuyCourse = () => {
     if (token) {
@@ -149,10 +151,10 @@ function CourseDetails() {
               </div>
               <p className={`text-richblack-200`}>{courseDescription}</p>
               <div className="text-md flex flex-wrap items-center gap-2">
-                <span className="text-yellow-25">{avgReviewCount}</span>
-                <RatingStars Review_Count={avgReviewCount} Star_Size={24} />
-                <span>{`(${ratingAndReviews.length} reviews)`}</span>
-                <span>{`${studentsEnrolled.length} students enrolled`}</span>
+                <span className="text-yellow-25">{avgReviewCount || 0}</span>
+                <RatingStars Review_Count={avgReviewCount || 0} Star_Size={24} />
+                <span>{`(${ratingAndReviews?.length || 0} reviews)`}</span>
+                <span>{`${studentsEnrolled?.length || 0} students enrolled`}</span>
               </div>
               <div>
                 <p className="">
@@ -174,16 +176,27 @@ function CourseDetails() {
               <p className="space-x-3 pb-4 text-3xl font-semibold text-richblack-5">
                 Rs. {price}
               </p>
-              <button className="yellowButton" onClick={handleBuyCourse}>
-                Buy Now
+              <button 
+                className="yellowButton" 
+                onClick={
+                  user && response?.courseDetails?.studentsEnrolled?.includes(user?._id)
+                    ? () => navigate("/dashboard/enrolled-courses")
+                    : handleBuyCourse
+                }
+              >
+                {user && response?.courseDetails?.studentsEnrolled?.includes(user?._id)
+                  ? "Go To Course"
+                  : "Buy Now"}
               </button>
-              <button className="blackButton">Add to Cart</button>
+              {(!user || !response?.courseDetails?.studentsEnrolled?.includes(user?._id)) && (
+                <button className="blackButton">Add to Cart</button>
+              )}
             </div>
           </div>
           {/* Courses Card */}
           <div className="right-[1rem] top-[60px] mx-auto hidden min-h-[600px] w-1/3 max-w-[410px] translate-y-24 md:translate-y-0 lg:absolute  lg:block">
             <CourseDetailsCard
-              course={response?.data?.courseDetails}
+              course={response?.courseDetails}
               setConfirmationModal={setConfirmationModal}
               handleBuyCourse={handleBuyCourse}
             />
@@ -212,7 +225,7 @@ function CourseDetails() {
                   <span>
                     {totalNoOfLectures} {`lecture(s)`}
                   </span>
-                  <span>{response.data?.totalDuration} total length</span>
+                  <span>{response?.totalDuration} total length</span>
                 </div>
                 <div>
                   <button

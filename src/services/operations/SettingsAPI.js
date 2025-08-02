@@ -89,8 +89,7 @@ export function updateProfile(token, formData) {
 //   toast.dismiss(toastId)
 // }
 
-export async function changePassword(data) {
-  const token = localStorage.getItem("token")
+export async function changePassword(data, token) {
   try {
     const response = await apiConnector("POST", CHANGE_PASSWORD_API, 
       {
@@ -98,10 +97,8 @@ export async function changePassword(data) {
         newPassword: data.newPassword
       },
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
       }
     )
 

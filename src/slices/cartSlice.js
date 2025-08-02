@@ -2,15 +2,36 @@ import { createSlice } from "@reduxjs/toolkit"
 import { toast } from "react-hot-toast"
 
 const initialState = {
-  cart: localStorage.getItem("cart")
-    ? (localStorage.getItem("cart"))
-    : [],
-  total: localStorage.getItem("total")
-    ? (localStorage.getItem("total"))
-    : 0,
-  totalItems: localStorage.getItem("totalItems")
-    ? (localStorage.getItem("totalItems"))
-    : 0,
+  cart: (() => {
+    try {
+      const cartData = localStorage.getItem("cart")
+      return cartData ? JSON.parse(cartData) : []
+    } catch (error) {
+      console.error("Error parsing cart data:", error)
+      localStorage.removeItem("cart")
+      return []
+    }
+  })(),
+  total: (() => {
+    try {
+      const totalData = localStorage.getItem("total")
+      return totalData ? JSON.parse(totalData) : 0
+    } catch (error) {
+      console.error("Error parsing total data:", error)
+      localStorage.removeItem("total")
+      return 0
+    }
+  })(),
+  totalItems: (() => {
+    try {
+      const totalItemsData = localStorage.getItem("totalItems")
+      return totalItemsData ? JSON.parse(totalItemsData) : 0
+    } catch (error) {
+      console.error("Error parsing totalItems data:", error)
+      localStorage.removeItem("totalItems")
+      return 0
+    }
+  })(),
 }
 
 const cartSlice = createSlice({

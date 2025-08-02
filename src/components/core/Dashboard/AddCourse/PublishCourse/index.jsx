@@ -51,7 +51,13 @@ export default function PublishCourse() {
       : COURSE_STATUS.DRAFT
     formData.append("status", courseStatus)
     setLoading(true)
+
     const result = await editCourseDetails(formData, token)
+  
+    
+
+
+    
     if (result) {
       goToCourses()
     }

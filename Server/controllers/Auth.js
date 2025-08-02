@@ -242,7 +242,7 @@ exports.login = async (req, res) => {
             }
 
             const token = jwt.sign(payload, process.env.JWT_SECRET, {
-                expiresIn: '6h'
+                expiresIn: '7d'
             })
 
             existingUser.token = token;
@@ -347,7 +347,7 @@ exports.login = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     // Get user from request (set by auth middleware)
-    const userId = req.user.id
+    const userId = req.existingUser.id
     const { oldPassword, newPassword } = req.body
 
     // Validate input

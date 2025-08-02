@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "react-hot-toast"
 import CountryCode from "../../data/countrycode.json"
-// import { apiConnector } from "../../services/apiconnector"
-// import { contactusEndpoint } from "../../services/apis"
+import { apiConnector } from "../../services/apiconnector"
+import { contactusEndpoint } from "../../services/apis"
 
 const ContactUsForm = () => {
   const [loading, setLoading] = useState(false)
@@ -14,15 +15,29 @@ const ContactUsForm = () => {
   } = useForm()
 
   const submitContactForm = async (data) => {
-    console.log("data: ",data);
+    console.log("data: ", data)
     try {
       setLoading(true)
-      // const res = await apiConnector("POST", contactusEndpoint.CONTACT_US_API, data)
-      const response = { status: "OK" }
-      console.log("Email Res - ", response)
+      const res = await apiConnector("POST", contactusEndpoint.CONTACT_US_API, data)
+      console.log("Email Res - ", res)
+      
+      if (res.data?.success) {
+        toast.success("Message sent successfully!")
+        reset({
+          email: "",
+          firstname: "",
+          lastname: "",
+          message: "",
+          phoneNo: "",
+          countrycode: "+91",
+        })
+      } else {
+        toast.error("Failed to send message. Please try again.")
+      }
       setLoading(false)
     } catch (error) {
       console.log("ERROR MESSAGE: ", error.message)
+      toast.error("Failed to send message. Please try again.")
       setLoading(false)
     }
   }

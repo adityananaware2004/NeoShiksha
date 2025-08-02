@@ -46,6 +46,16 @@ function App() {
   
   const { user } = useSelector((state) => state.profile)
 
+  // Load user details if token exists but no user data
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token"));
+    if (token && !user) {
+      import("./services/operations/profileAPI").then(({ getUserDetails }) => {
+        dispatch(getUserDetails(token, navigate));
+      });
+    }
+  }, [dispatch, navigate, user]);
+
 
   return (
    <div className="w-screen min-h-screen bg-richblack-900 flex flex-col font-inter">

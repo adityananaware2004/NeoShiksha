@@ -22,6 +22,8 @@ const {
   GET_FULL_COURSE_DETAILS_AUTHENTICATED,
   CREATE_RATING_API,
   LECTURE_COMPLETION_API,
+  GET_TOP_SELLING_COURSES_API,
+  GET_NEW_COURSES_API,
 } = courseEndpoints
 
 export const getAllCourses = async () => {
@@ -90,6 +92,8 @@ export const addCourseDetails = async (data, token) => {
   try {
     const response = await apiConnector("POST", CREATE_COURSE_API, data, {
       "Content-Type": "multipart/form-data",
+      // "Content-Type": "application/json",
+      
       Authorization: `Bearer ${token}`,
     })
     console.log("CREATE COURSE API RESPONSE............", response)
@@ -113,7 +117,7 @@ export const editCourseDetails = async (data, token) => {
   try {
     
     const response = await apiConnector("POST", EDIT_COURSE_API, data, {
-      "Content-Type": "multipart/form-data",
+    
       Authorization: `Bearer ${token}`,
     })
     console.log("EDIT COURSE API RESPONSE............", response)
@@ -377,15 +381,56 @@ export const createRating = async (data, token) => {
     })
     console.log("CREATE RATING API RESPONSE............", response)
     if (!response?.data?.success) {
-      throw new Error("Could Not Create Rating")
+      throw new Error(response?.data?.message || "Could Not Create Rating")
     }
-    toast.success("Rating Created")
+    toast.success("Rating Created Successfully!")
     success = true
   } catch (error) {
     success = false
     console.log("CREATE RATING API ERROR............", error)
-    toast.error(error.message)
+    
+    // Show specific error message from backend
+    const errorMessage = error?.response?.data?.message || error?.message || "Failed to create rating"
+    toast.error(errorMessage)
   }
   toast.dismiss(toastId)
   return success
+}
+
+// get top selling courses
+export const getTopSellingCourses = async () => {
+  const toastId = toast.loading("Loading...")
+  let result = []
+  try {
+    const response = await apiConnector("GET", GET_TOP_SELLING_COURSES_API)
+    console.log("GET_TOP_SELLING_COURSES_API RESPONSE............", response)
+    if (!response?.data?.success) {
+      throw new Error("Could Not Fetch Top Selling Courses")
+    }
+    result = response?.data?.data
+  } catch (error) {
+    console.log("GET_TOP_SELLING_COURSES_API ERROR............", error)
+    toast.error(error.message)
+  }
+  toast.dismiss(toastId)
+  return result
+}
+
+// get new courses
+export const getNewCourses = async () => {
+  const toastId = toast.loading("Loading...")
+  let result = []
+  try {
+    const response = await apiConnector("GET", GET_NEW_COURSES_API)
+    console.log("GET_NEW_COURSES_API RESPONSE............", response)
+    if (!response?.data?.success) {
+      throw new Error("Could Not Fetch New Courses")
+    }
+    result = response?.data?.data
+  } catch (error) {
+    console.log("GET_NEW_COURSES_API ERROR............", error)
+    toast.error(error.message)
+  }
+  toast.dismiss(toastId)
+  return result
 }
