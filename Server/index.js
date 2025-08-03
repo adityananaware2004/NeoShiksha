@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://neoshiksha-edtech.vercel.app", // Your frontend domain
+  "https://neo-shiksha-app.vercel.app/", // Your frontend domain
 ];
 
 app.use(
@@ -44,6 +44,7 @@ app.use(
     credentials: true,
   })
 );
+
 
 app.use(fileUpload({
     useTempFiles: true,
