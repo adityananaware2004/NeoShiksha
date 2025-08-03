@@ -21,27 +21,56 @@ const PORT = process.env.PORT || 5000;
 
 // database connection
 database.dbconnect();
-database.dbconnect();
+
 
 // middleware
 app.use(express.json());
 app.use(cookieParser());
 
+// Handle preflight requests
+app.options('*', cors());
+
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://neo-shiksha-app.vercel.app/", // Your frontend domain
+  "https://neo-shiksha-app.vercel.app", // Your frontend domain
 ];
+
+// Alternative more permissive CORS configuration (uncomment if needed for testing)
+// app.use(cors({
+//   origin: true,
+//   credentials: true
+// }));
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("CORS not allowed for this origin"));
+      console.log('CORS request from origin:', origin);
+      
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) {
+        console.log('Allowing request with no origin');
+        return callback(null, true);
       }
+      
+      // Check if the origin is in our allowed list
+      if (allowedOrigins.includes(origin)) {
+        console.log('Origin allowed:', origin);
+        return callback(null, true);
+      }
+      
+      // For development, you might want to allow all origins
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Development mode - allowing all origins');
+        return callback(null, true);
+      }
+      
+      console.log('Origin not allowed:', origin);
+      callback(new Error("CORS not allowed for this origin"));
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
+    exposedHeaders: ['*', 'Authorization']
   })
 );
 
